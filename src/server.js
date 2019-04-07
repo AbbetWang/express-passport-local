@@ -1,12 +1,24 @@
 const express = require('express')
 const passport = require('passport')
-var session = require("express-session")
-
+const session = require("express-session")
+const checkUser = require('./util/index')
 const LocalStrategy = require('passport-local').Strategy
+
+const bcrypt = require('bcrypt')
 const app = express()
+
+const saltRounds = 10;
+const myPlaintextPassword = 's0/\/\P4$$w0rD'
+const someOtherPlaintextPassword = 'not_bacon'
 
 passport.use('local',new LocalStrategy(
     (username, password, done) => {
+        bcrypt.genSalt(saltRounds,(err,salt)=>{
+            bcrypt.hash(myPlaintextPassword,salt,(err,hash)=>{
+                console.log(hash)
+                return done(null, {id:'1',username: username,password: hash});
+            })
+        })
         if(username == '23'){
        // console.log(username+ ':' + password)
           return done(null, {id:'1',username: username,password:password});
@@ -21,9 +33,9 @@ passport.serializeUser(function(user, done) {
     done(null, user);
 })
   
-passport.deserializeUser(function(id, done) {
-      console.log(id)
-      done(null, {id:'1',username:'1212',password:'122'});
+passport.deserializeUser(function(user, done) {
+      console.log(user)
+      done(null, user);
 })
 app.use(session({ secret: "cats" }));
 app.use(passport.initialize())
@@ -35,7 +47,10 @@ passport.authenticate('local'),
   //  console.table(req.session)
     res.json({message: 'success'})
 })
-app.get('/',(req,res)=>{
+app.get('/',async (req,res)=>{
+
+    const match = await checkUser(req.user,'1234')
+    console.log(match)
     res.json({
         message: req.ip,
         user: req.user
