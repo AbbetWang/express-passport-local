@@ -4,7 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel lib -d out",
+    "start": "yarn build && nodemon out/server.js",
+    "server": "yarn build && node out/server.js",
+    "test": "yarn build && mocha --require @babel/register"
   },
   "keywords": [
     "passport",
@@ -23,6 +26,7 @@
     "@babel/cli": "^7.4.3",
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
+    "mocha": "^6.0.2",
     "nodemon": "^1.18.10"
   }
 }
