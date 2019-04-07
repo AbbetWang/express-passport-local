@@ -1,10 +1,9 @@
 const express = require('express')
 const passport = require('passport')
 const session = require("express-session")
-const checkUser = require('./util/index')
+import {checkUser} from './util/index'
 const LocalStrategy = require('passport-local').Strategy
-
-const bcrypt = require('bcrypt')
+import * as bcrypt from 'bcrypt'
 const app = express()
 
 const saltRounds = 10;
@@ -14,18 +13,18 @@ const someOtherPlaintextPassword = 'not_bacon'
 passport.use('local',new LocalStrategy(
     (username, password, done) => {
         bcrypt.genSalt(saltRounds,(err,salt)=>{
-            bcrypt.hash(myPlaintextPassword,salt,(err,hash)=>{
-                console.log(hash)
+            bcrypt.hash(password,salt,(err,hash)=>{
+              //  console.log(hash)
                 return done(null, {id:'1',username: username,password: hash});
             })
         })
-        if(username == '23'){
-       // console.log(username+ ':' + password)
-          return done(null, {id:'1',username: username,password:password});
-        }else{
-            return done(err);
-            //return done(null, false, { message: 'Incorrect username.' });
-        }
+    //     if(username == '23'){
+    //    // console.log(username+ ':' + password)
+    //       return done(null, {id:'1',username: username,password:password});
+    //     }else{
+    //         return done(err);
+    //         //return done(null, false, { message: 'Incorrect username.' });
+    //     }
       }
 ))
 passport.serializeUser(function(user, done) {
@@ -34,7 +33,7 @@ passport.serializeUser(function(user, done) {
 })
   
 passport.deserializeUser(function(user, done) {
-      console.log(user)
+     // console.log(user)
       done(null, user);
 })
 app.use(session({ secret: "cats" }));
