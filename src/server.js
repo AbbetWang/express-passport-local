@@ -47,9 +47,9 @@ passport.authenticate('local'),
   //  console.table(req.session)
     res.json({message: 'success'})
 })
-app.get('/', (req,res)=>{
+app.get('/',async (req,res)=>{
 
-   // const match = await checkUser(req.user,'1234')
+    const match = await checkUser(req.user,'1234')
     console.log(match)
     res.json({
         message: req.ip,
